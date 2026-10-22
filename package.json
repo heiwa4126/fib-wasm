@@ -49,6 +49,5 @@
   "devDependencies": {
     "@heiwa4126/fib-wasm": "link:.",
     "npm-run-all2": "^9.0.4"
-  },
-  "packageManager": "pnpm@10.34.7"
+  }
 }
