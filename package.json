@@ -13,11 +13,12 @@
 	"main": "index.js",
 	"types": "index.d.ts",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "cargo test && node --test",
 		"build:rust": "cargo build --release --target wasm32-unknown-emscripten",
 		"build:copy": "mkdir -p dist && cp target/wasm32-unknown-emscripten/release/fib-wasm.js dist/ && cp target/wasm32-unknown-emscripten/release/fib_wasm.wasm dist/",
 		"build": "npm run build:rust && npm run build:copy",
-		"prepack": "npm run build"
+		"prepack": "npm run build",
+		"format": "cargo fmt && oxfmt"
 	},
 	"packageManager": "pnpm@10.34.7"
 }
