@@ -1,0 +1,23 @@
+{
+	"name": "@heiwa4126/fib-wasm",
+	"version": "1.0.0",
+	"description": "",
+	"keywords": [],
+	"license": "ISC",
+	"author": "",
+	"files": [
+		"index.js",
+		"index.d.ts",
+		"dist"
+	],
+	"main": "index.js",
+	"types": "index.d.ts",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build:rust": "cargo build --release --target wasm32-unknown-emscripten",
+		"build:copy": "mkdir -p dist && cp target/wasm32-unknown-emscripten/release/fib-wasm.js dist/ && cp target/wasm32-unknown-emscripten/release/fib_wasm.wasm dist/",
+		"build": "npm run build:rust && npm run build:copy",
+		"prepack": "npm run build"
+	},
+	"packageManager": "pnpm@10.34.7"
+}
