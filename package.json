@@ -1,24 +1,48 @@
 {
-	"name": "@heiwa4126/fib-wasm",
-	"version": "1.0.0",
-	"description": "",
-	"keywords": [],
-	"license": "ISC",
-	"author": "",
-	"files": [
-		"index.js",
-		"index.d.ts",
-		"dist"
-	],
-	"main": "index.js",
-	"types": "index.d.ts",
-	"scripts": {
-		"test": "cargo test && node --test",
-		"build:rust": "cargo build --release --target wasm32-unknown-emscripten",
-		"build:copy": "mkdir -p dist && cp target/wasm32-unknown-emscripten/release/fib-wasm.js dist/ && cp target/wasm32-unknown-emscripten/release/fib_wasm.wasm dist/",
-		"build": "npm run build:rust && npm run build:copy",
-		"prepack": "npm run build",
-		"format": "cargo fmt && oxfmt"
-	},
-	"packageManager": "pnpm@10.34.7"
+  "name": "@heiwa4126/fib-wasm",
+  "version": "0.0.1",
+  "description": "A Fibonacci calculator for Node.js, implemented in Rust and compiled to WebAssembly.",
+  "keywords": [
+    "fibonacci",
+    "wasm",
+    "webassembly",
+    "rust",
+    "nodejs",
+    "demo",
+    "example"
+  ],
+  "homepage": "https://github.com/heiwa4126/fib-wasm#readme",
+  "bugs": {
+    "url": "https://github.com/heiwa4126/fib-wasm/issues"
+  },
+  "license": "MIT",
+  "author": "heiwa4126 <heiwa4126@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heiwa4126/fib-wasm.git"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "dist"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "run-s test:rust test:node",
+    "test:rust": "cargo test",
+    "test:node": "run-s build node:test",
+    "node:test": "node --test",
+    "build:rust": "cargo build --release --target wasm32-unknown-emscripten",
+    "build:copy": "node script/build-copy.cjs",
+    "build": "run-s build:rust build:copy",
+    "prepack": "npm run build",
+    "format:rust": "cargo fmt",
+    "format:others": "oxfmt",
+    "format": "run-s format:rust format:others"
+  },
+  "devDependencies": {
+    "npm-run-all2": "^9.0.4"
+  },
+  "packageManager": "pnpm@10.34.7"
 }
