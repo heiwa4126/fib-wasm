@@ -1,0 +1,52 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  osv-scan:
+    if: github.repository_owner == github.actor
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0
+    permissions:
+      actions: read
+      security-events: write
+      contents: read
+    with:
+      scan-args: "-L ./pnpm-lock.yaml -L ./Cargo.lock"
+
+  publish:
+    timeout-minutes: 20
+    if: github.repository_owner == github.actor
+    needs: osv-scan
+    runs-on: ubuntu-latest
+    environment: npmjs
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-emscripten
+
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984 # v16
+        with:
+          version: latest
+
+      - name: Build and Publish
+        uses: heiwa4126/reusable-workflows/build-pnpm-package-and-publish@5c03a4bd4faea114238e7fe14222f8b2d23fb4ae # v0.0.16
+        with:
+          checkout: true

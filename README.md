@@ -1,6 +1,6 @@
 # fib-wasm (@heiwa4126/fib-wasm)
 
-Rust でフィボナッチ関数を書いて、wasm としてビルドしたものを、npm パッケージにする。
+Rust でフィボナッチ関数を書いて、wasm としてビルドしたものを、npm パッケージにする練習。
 
 ## サンプル
 
@@ -13,3 +13,16 @@ Rust でフィボナッチ関数を書いて、wasm としてビルドしたも�
 [example/package.json](./example/package.json) の `"type": "module"` により、TypeScript サンプルを ESM として明示する。`.cjs` は引き続き CommonJS として実行される。
 
 3種類をまとめて実行するスモークテスト: `pnpm smoke-test`（ビルド済みであること）。
+
+## npm への公開
+
+[公開ワークフロー](./.github/workflows/publish.yml) は、リポジトリ所有者が `v1.2.3` または `v1.2.3-rc.1` のようなタグを push すると実行される。
+OSV で pnpm と Cargo のロックファイルをスキャンした後、Rust stable、`wasm32-unknown-emscripten` ターゲット、Emscripten をセットアップして npm に公開する。
+通常リリースの npm dist-tag は `latest`、プリリリースは `dev`。
+
+事前に GitHub の `npmjs` environment と、npm パッケージの Trusted Publisher（このリポジトリ、ワークフロー `publish.yml`、environment `npmjs`）を設定する。
+タグのバージョンは `package.json` のバージョンと揃える。
+
+`prepublishOnly` で Rust のテスト、Wasm ビルド、Node.js のテスト、3種類のスモークテストを実行する。
+既存の `prepack` によるビルドも維持するため、`pnpm pack` でも Wasm が生成される。
+ローカルでの検証は、Rust と Emscripten（`emcc`）を利用できる環境で `pnpm install --frozen-lockfile`、`pnpm prepublishOnly` を実行する。
