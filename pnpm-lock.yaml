@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@heiwa4126/fib-wasm':
+        specifier: link:.
+        version: 'link:'
       npm-run-all2:
         specifier: ^9.0.4
         version: 9.0.4
