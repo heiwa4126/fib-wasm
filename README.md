@@ -14,6 +14,27 @@ Rust でフィボナッチ関数を書いて、wasm としてビルドしたも�
 
 3 種類をまとめて実行するスモークテスト: `pnpm smoke-test`（ビルド済みであること）。
 
+## ブラウザー / React
+
+Vite などのブラウザーバンドラーから利用できる。パッケージの`browser` export が WebAssembly 版を選ぶ。
+
+```jsx
+import { useState } from "react";
+import { fib } from "@heiwa4126/fib-wasm";
+
+export function Fibonacci() {
+	const [result, setResult] = useState();
+
+	async function calculate() {
+		setResult(await fib(10));
+	}
+
+	return <button onClick={calculate}>{result ?? "Calculate fib(10)"}</button>;
+}
+```
+
+WebAssembly はバンドラーが bundle に含める（サイズ設定により独立アセットまたは inline）。アプリは`http://`または`https://`で配信する（`file://`では動作しない）。
+
 ## npm への公開
 
 [公開ワークフロー](./.github/workflows/publish.yml) は、リポジトリ所有者が`v1.2.3`または`v1.2.3-rc.1`のようなタグを push すると実行される。

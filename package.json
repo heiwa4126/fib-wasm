@@ -1,11 +1,12 @@
 {
   "name": "@heiwa4126/fib-wasm",
   "version": "0.0.1-alpha.2",
-  "description": "A Fibonacci calculator for Node.js, implemented in Rust and compiled to WebAssembly.",
+  "description": "A Fibonacci calculator for Node.js and browsers, implemented in Rust and compiled to WebAssembly.",
   "keywords": [
     "demo",
     "example",
     "fibonacci",
+    "browser",
     "nodejs",
     "rust",
     "wasm",
@@ -24,16 +25,27 @@
   "files": [
     "index.js",
     "index.d.ts",
-    "dist"
+    "dist",
+    "browser.mjs"
   ],
   "main": "index.js",
   "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "browser": "./browser.mjs",
+      "node": "./index.js",
+      "default": "./browser.mjs"
+    }
+  },
   "scripts": {
     "test": "run-s test:rust test:node",
     "test:rust": "cargo test",
     "test:node": "run-s build node:test",
-    "node:test": "node --test",
-    "build:rust": "cargo build --release --target wasm32-unknown-emscripten",
+    "node:test": "node --conditions=browser --test",
+    "build:rust": "run-s build:rust:node build:rust:web",
+    "build:rust:node": "cargo build --release --target wasm32-unknown-emscripten",
+    "build:rust:web": "cargo --config .cargo/config.web.toml build --release --target wasm32-unknown-emscripten --target-dir target/web",
     "build:copy": "node script/build-copy.cjs",
     "build": "run-s build:rust build:copy",
     "prepublishOnly": "run-s test smoke-test",
