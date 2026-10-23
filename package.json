@@ -47,7 +47,7 @@
     "format": "run-s format:rust format:others"
   },
   "devDependencies": {
-    "@heiwa4126/fib-wasm": "link:.",
+    "@heiwa4126/fib-wasm": "link:",
     "npm-run-all2": "^9.0.4"
   }
 }
