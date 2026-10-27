@@ -5,7 +5,7 @@
 
 Rust で実装し、WebAssembly にコンパイルした Node.js/ブラウザー向けのフィボナッチ数ライブラリーです。
 
-[English README](./README.md) · [開発ガイド](./Develop.md)
+[English README](./README.md) · [開発ガイド](./Develop_ja.md) · [English development guide](./Develop.md)
 
 ## インストール
 

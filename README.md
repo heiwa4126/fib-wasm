@@ -5,7 +5,7 @@
 
 A small Fibonacci library written in Rust and compiled to WebAssembly for Node.js and browsers.
 
-[日本語版 README](./README_ja.md) · [Development guide](./Develop.md)
+[日本語版 README](./README_ja.md) · [Development guide](./Develop.md) · [日本語の開発ガイド](./Develop_ja.md)
 
 ## Installation
 

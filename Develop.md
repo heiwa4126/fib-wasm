@@ -1,12 +1,41 @@
 # Development
 
-[User guide](./README.md) · [日本語 README](./README_ja.md)
+[User guide](./README.md) · [日本語 README](./README_ja.md) · [日本語の開発ガイド](./Develop_ja.md)
 
 ## Prerequisites
 
 - Node.js and pnpm
 - Rust stable with the `wasm32-unknown-emscripten` target
 - Emscripten SDK (`emcc`)
+
+## Set up Emscripten
+
+The following commands install and activate the latest Emscripten SDK in a POSIX shell:
+
+```sh
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+./emsdk install latest
+./emsdk activate latest
+source ./emsdk_env.sh
+emcc --version
+```
+
+The environment setup applies to the current shell. To load it automatically in Bash, add the following to `~/.bashrc`, adjusting the path to your emsdk checkout:
+
+```sh
+export EMSDK_QUIET=1
+source "/path/to/emsdk/emsdk_env.sh"
+```
+
+Add the Rust target and verify that it is installed:
+
+```sh
+rustup target add wasm32-unknown-emscripten
+rustup target list --installed
+```
+
+See the [Rust platform documentation](https://doc.rust-lang.org/beta/rustc/platform-support/wasm32-unknown-emscripten.html) for details about this target.
 
 ## Install and build
 
