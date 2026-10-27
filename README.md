@@ -1,49 +1,69 @@
-# fib-wasm (@heiwa4126/fib-wasm)
+# @heiwa4126/fib-wasm
 
-Rust でフィボナッチ関数を書いて、wasm としてビルドしたものを、npm パッケージにする練習。
+[![npm version](https://img.shields.io/npm/v/%40heiwa4126%2Ffib-wasm)](https://www.npmjs.com/package/@heiwa4126/fib-wasm)
+[![MIT license](https://img.shields.io/npm/l/%40heiwa4126%2Ffib-wasm)](https://opensource.org/licenses/MIT)
 
-## サンプル
+A small Fibonacci library written in Rust and compiled to WebAssembly for Node.js and browsers.
 
-依存関係をインストールし、`pnpm build`でビルドした後に実行する。いずれも`55`を表示する。
+[日本語版 README](./README_ja.md) · [Development guide](./Develop.md)
 
-- [CommonJS](./example/fib.cjs): `node example/fib.cjs`
-- [ES Modules](./example/fib.mjs): `node example/fib.mjs`
-- [TypeScript](./example/fib.ts): `node example/fib.ts`（TypeScript を直接実行できる Node.js が必要）
+## Installation
 
-[example/package.json](./example/package.json) の`"type": "module"`により、TypeScript サンプルを ESM として明示する。`.cjs`は引き続き CommonJS として実行される。
-
-3 種類をまとめて実行するスモークテスト: `pnpm smoke-test`（ビルド済みであること）。
-
-## ブラウザー / React
-
-Vite などのブラウザーバンドラーから利用できる。パッケージの`browser` export が WebAssembly 版を選ぶ。
-
-```jsx
-import { useState } from "react";
-import { fib } from "@heiwa4126/fib-wasm";
-
-export function Fibonacci() {
-	const [result, setResult] = useState();
-
-	async function calculate() {
-		setResult(await fib(10));
-	}
-
-	return <button onClick={calculate}>{result ?? "Calculate fib(10)"}</button>;
-}
+```sh
+npm install @heiwa4126/fib-wasm
 ```
 
-WebAssembly はバンドラーが bundle に含める（サイズ設定により独立アセットまたは inline）。アプリは`http://`または`https://`で配信する（`file://`では動作しない）。
+## Usage
 
-## npm への公開
+### ES modules
 
-[公開ワークフロー](./.github/workflows/publish.yml) は、リポジトリ所有者が`v1.2.3`または`v1.2.3-rc.1`のようなタグを push すると実行される。
-OSV で pnpm と Cargo のロックファイルをスキャンした後、Rust stable、`wasm32-unknown-emscripten`ターゲット、Emscripten をセットアップして npm に公開する。
-通常リリースの npm dist-tag は`latest`、プリリリースは`dev`。
+```js
+import { fib } from "@heiwa4126/fib-wasm";
 
-事前に GitHub の`npmjs` environment と、npm パッケージの Trusted Publisher（このリポジトリ、ワークフロー `publish.yml`、environment `npmjs`）を設定する。
-タグのバージョンは`package.json`のバージョンと揃える。
+console.log(await fib(10)); // 55
+```
 
-`prepublishOnly`で Rust のテスト、Wasm ビルド、Node.js のテスト、3 種類のスモークテストを実行する。
-既存の`prepack`によるビルドも維持するため、`pnpm pack`でも Wasm が生成される。
-ローカルでの検証は、Rust と Emscripten（`emcc`）を利用できる環境で`pnpm install --frozen-lockfile`、`pnpm prepublishOnly`を実行する。
+### CommonJS
+
+```js
+const { fib } = require("@heiwa4126/fib-wasm");
+
+fib(10).then(console.log); // 55
+```
+
+### TypeScript
+
+Type declarations are included with the package.
+
+```ts
+import { fib } from "@heiwa4126/fib-wasm";
+
+const result: number = await fib(10);
+console.log(result); // 55
+```
+
+### Browsers
+
+Use the package from a browser application built with a bundler that supports loading WebAssembly assets, such as Vite:
+
+```js
+import { fib } from "@heiwa4126/fib-wasm";
+
+document.querySelector("#result").textContent = String(await fib(10));
+```
+
+The browser export loads WebAssembly asynchronously. Serve the application over `http://` or `https://`; opening it directly with `file://` is not supported.
+
+## API
+
+```ts
+function fib(n: number): Promise<number>;
+```
+
+- `n` must be an integer from `0` through `78`, inclusive.
+- A non-integer argument rejects with `TypeError`.
+- An integer outside the supported range rejects with `RangeError`.
+
+## License
+
+[MIT](./LICENSE)
